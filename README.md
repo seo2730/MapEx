@@ -24,7 +24,7 @@
     <br>
   </p>
 </p>
-  <h3 align="center"><a href="https://arxiv.org/abs/2409.15590">Paper</a> | <a href="https://mapex-explorer.github.io">Project Page</a> | <a href="">Video</a></h3>
+  <h3 align="center"><a href="https://arxiv.org/abs/2409.15590">Paper</a> | <a href="https://mapex-explorer.github.io">Project Page</a> | <a href="https://youtu.be/x6vEn8d6lN0">Video</a></h3>
   <div align="center"></div>
 
 ## Preliminary Setup
