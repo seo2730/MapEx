@@ -38,7 +38,7 @@ Clone the repository and make sure that you are on the main branch.
 ### Set up Mamba environment (Recommended)
 Mamba is a package manger used for managing python environments and dependencies, known for having better speed and efficiency than conda. For more information, please refer to this <a href="https://mamba.readthedocs.io/en/latest/user_guide/mamba.html">link</a>. 
 
-    wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh
+    https://github.com/conda-forge/miniforge/releases/tag/24.11.3-2
     bash Mambaforge-Linux-x86_64.sh
 
 Go to `lama` submodule folder, and create `lama` environment. 
