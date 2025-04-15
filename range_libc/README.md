@@ -54,6 +54,17 @@ WITH_CUDA=ON python setup.py install
 python test.py
 ```
 
+- ISSUE
+	- range_libc 문제 컴파일 문제 있음
+		```
+		ImportError: /home/seo2730/Github/MapEx/range_libc/pywrapper/range_libc.cpython-36m-x86_64-linux-gnu.so: undefined symbol: _ZSt28__throw_bad_array_new_lengthv
+		```
+	- 해결책
+		```
+		conda install -c conda-forge libstdcxx-ng
+		```
+
+
 To see example usage of the Python wrappers (using the ROS specific helpers) see [https://github.com/mit-racecar/particle_filter](https://github.com/mit-racecar/particle_filter). See the [/docs](/docs) folder for documentation.
 
 ### Building on a RACECAR
