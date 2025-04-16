@@ -51,6 +51,34 @@ for input_exp_i, input_experiment_folder in enumerate(input_experiment_folders):
         frame_num = int(obsimg_name.split('.')[0])
         # Load and transform observed image
         obs_img_threechan = cv2.imread(input_obsimg_path)
+        # 빈 곳 채우기
+        h, w = obs_img_threechan.shape[:2]
+        delta_h, delta_w = 0, 0
+        if w < 1428:
+            delta_w = 1428-w
+        if h < 1326:
+            delta_h = 1326-h
+        top = delta_h // 2
+        bottom = delta_h - top
+        left = delta_w // 2
+        right = delta_w - left
+
+        if delta_h > 0 and delta_w > 0:
+            # 흰색도 검정도 회색도 아닌 색깔을 회색으로 바꾸기
+            for y in range(h):
+                for x in range(w):
+                    img_rgb=cv2.cvtColor(obs_img_threechan, cv2.COLOR_BGR2RGB) 
+                    r,g,b = img_rgb[y,x]
+                    gray_color = [128,128,128]
+                    if r>1 and r<255 and g>0 and g<255 and b>0 and b<255:
+                        obs_img_threechan[y,x] = gray_color
+            # 여백 붙이기 (회색 여백)            
+            obs_img_threechan = cv2.copyMakeBorder(
+                obs_img_threechan, top, bottom, left, right,
+                borderType=cv2.BORDER_CONSTANT,
+                value=[128, 128, 128]  # 회색
+            )
+            new_data=obs_img_threechan
         obs_img_onechan = cv2.cvtColor(obs_img_threechan, cv2.COLOR_BGR2RGB)[:,:,0]
 
         # Convert observed image to model input
@@ -60,7 +88,6 @@ for input_exp_i, input_experiment_folder in enumerate(input_experiment_folders):
         lama_pred_alltrain = model_alltrain(input_lama_batch)
         lama_pred_alltrain_viz = visualize_prediction(lama_pred_alltrain, lama_mask)
             
-
         plt_row = 2# 4 + num_pred_lama 
         plt_col = 2
         plt.figure(figsize=(10, 10))
@@ -78,6 +105,42 @@ for input_exp_i, input_experiment_folder in enumerate(input_experiment_folders):
         plt.scatter(odom[frame_num, 1]-500, odom[frame_num, 0]-500, c='r', s=10, marker='x')
         plt.title('All Train Prediction')
         plt.tight_layout()
+
+        plt_row = 2# 4 + num_pred_lama 
+        plt_col = 2
+        plt.figure(figsize=(10, 10))
+        plt.subplot(plt_row, plt_col, 1)
+        plt.imshow(obs_img_threechan[450:900,400:900], cmap='gray')
+#         plt.scatter(odom[:frame_num, 1]-500, odom[:frame_num, 0]-500, c='r', s=1)
+#         plt.scatter(odom[frame_num, 1]-500, odom[frame_num, 0]-500, c='r', s=10, marker='x')
+        plt.title('Observed Image')
+        plt.subplot(plt_row, plt_col, 2)
+        plt.imshow(cv2.imread(gt_path)[450:900,400:900])
+        plt.title('Ground Truth')
+        plt.subplot(plt_row, plt_col, 3)
+        plt.imshow(lama_pred_alltrain_viz[450:900,400:900])
+#         plt.scatter(odom[:frame_num, 1]-500, odom[:frame_num, 0]-500, c='r', s=1)
+#         plt.scatter(odom[frame_num, 1]-500, odom[frame_num, 0]-500, c='r', s=10, marker='x')
+        plt.title('All Train Prediction')
+        plt.tight_layout()
+
+#         plt_row = 2# 4 + num_pred_lama 
+#         plt_col = 2
+#         plt.figure(figsize=(10, 10))
+#         plt.subplot(plt_row, plt_col, 1)
+#         plt.imshow(obs_img_onechan, cmap='gray')
+#         plt.scatter(odom[:, 1], odom[:, 0], c='r', s=1)
+#         plt.scatter(odom[:, 1], odom[:, 0], c='r', s=10, marker='x')
+#         plt.title('Observed Image')
+#         plt.subplot(plt_row, plt_col, 2)
+#         plt.imshow(cv2.imread(gt_path))
+#         plt.title('Ground Truth')
+#         plt.subplot(plt_row, plt_col, 3)
+#         plt.imshow(lama_pred_alltrain_viz)
+#         plt.scatter(odom[:, 1], odom[:, 0], c='r', s=1)
+#         plt.scatter(odom[:, 1], odom[:, 0], c='r', s=10, marker='x')
+#         plt.title('All Train Prediction')
+#         plt.tight_layout()
         
         lama_pred_viz_path = os.path.join(output_folder, f'lama_pred_viz_{obsimg_name.split(".")[0]}.png')
         plt.savefig(lama_pred_viz_path)
